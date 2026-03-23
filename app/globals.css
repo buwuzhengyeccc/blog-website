@@ -1,0 +1,357 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ember text-stone-100 antialiased transition-colors duration-300;
+}
+
+html.light body {
+  @apply bg-sand text-ink;
+}
+
+.surface {
+  @apply border border-white/10 bg-white/5 backdrop-blur;
+}
+
+html.light .surface {
+  @apply border-black/10 bg-white/50;
+}
+
+.page-grid {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+html.light .page-grid {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,.05) 1px, transparent 1px);
+}
+
+.cube-home {
+  @apply relative;
+}
+
+.cube-home__scene {
+  @apply pointer-events-none fixed inset-0 z-0 flex items-center justify-center;
+  perspective: 1100px;
+}
+
+.cube-home__cube {
+  position: relative;
+  width: min(74vw, 74vh, 560px);
+  height: min(74vw, 74vh, 560px);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.cube-home__face {
+  @apply absolute inset-0 overflow-hidden;
+  backface-visibility: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 48px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 48px),
+    #14100d;
+}
+
+.cube-home__face img {
+  @apply absolute inset-0 h-full w-full object-cover;
+}
+
+.cube-home__faceLabel {
+  @apply pointer-events-none absolute bottom-6 left-7 select-none text-[clamp(2rem,8vw,5rem)] font-semibold tracking-[0.08em] text-white/10;
+}
+
+.cube-home__face[data-face="front"] { transform: translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+.cube-home__face[data-face="back"] { transform: rotateY(180deg) translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+.cube-home__face[data-face="right"] { transform: rotateY(90deg) translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+.cube-home__face[data-face="left"] { transform: rotateY(-90deg) translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+.cube-home__face[data-face="top"] { transform: rotateX(-90deg) translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+.cube-home__face[data-face="bottom"] { transform: rotateX(90deg) translateZ(calc(min(74vw, 74vh, 560px) / 2)); }
+
+.cube-home__hud {
+  @apply fixed right-8 top-8 z-20 text-right text-[11px] uppercase tracking-[0.2em] text-stone-400;
+}
+
+.cube-home__progress {
+  @apply mt-2 ml-auto h-px w-28 overflow-hidden bg-stone-500/60;
+}
+
+.cube-home__progressFill {
+  @apply h-full bg-gold transition-all duration-100;
+}
+
+.cube-home__sceneName {
+  @apply mt-2 text-[10px] text-gold;
+}
+
+.cube-home__theme {
+  @apply fixed bottom-8 left-8 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-sm text-gold backdrop-blur transition hover:bg-white/20;
+}
+
+.cube-home__themeSun {
+  @apply block;
+}
+
+.cube-home__themeMoon {
+  @apply hidden;
+}
+
+html.light .cube-home__themeSun {
+  display: none;
+}
+
+html.light .cube-home__themeMoon {
+  display: inline;
+}
+
+.cube-home__dots {
+  @apply fixed left-8 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-2;
+}
+
+.cube-home__dot {
+  @apply block h-1 w-1 rounded-full bg-stone-500 transition;
+}
+
+.cube-home__dot.is-active {
+  @apply scale-[1.8] bg-gold;
+}
+
+.cube-home__caption {
+  @apply pointer-events-none fixed bottom-8 left-1/2 z-20 -translate-x-1/2 text-center;
+}
+
+.cube-home__captionNum {
+  @apply mb-1 text-[10px] uppercase tracking-[0.28em] text-gold;
+}
+
+.cube-home__captionName {
+  @apply text-[clamp(1.8rem,5vw,3.5rem)] font-semibold tracking-[0.08em] text-stone-400/70;
+}
+
+.cube-home__scroll {
+  @apply relative z-10;
+}
+
+.cube-home__section {
+  @apply flex min-h-screen items-center px-20 py-24;
+}
+
+.cube-home__section.is-right {
+  @apply justify-end;
+}
+
+.cube-home__card {
+  @apply max-w-md border-l border-gold/20 bg-ember/80 p-8 backdrop-blur;
+}
+
+.cube-home__card.is-right {
+  @apply border-l-0 border-r text-right;
+}
+
+.cube-home__line {
+  @apply mb-5 h-px w-14 bg-gold;
+}
+
+.cube-home__card.is-right .cube-home__line {
+  @apply ml-auto;
+}
+
+.cube-home__tag {
+  @apply mb-4 text-[10px] uppercase tracking-[0.25em] text-gold;
+}
+
+.cube-home__title {
+  @apply flex flex-col text-[clamp(2.4rem,6vw,5rem)] font-semibold uppercase leading-[0.92] tracking-[0.03em];
+}
+
+.cube-home__body {
+  @apply mt-5 text-sm leading-8 text-stone-300;
+}
+
+.cube-home__stats {
+  @apply mt-8 flex flex-wrap gap-8;
+}
+
+.cube-home__card.is-right .cube-home__stats {
+  @apply justify-end;
+}
+
+.cube-home__stat {
+  @apply flex flex-col gap-1;
+}
+
+.cube-home__statValue {
+  @apply text-4xl font-semibold leading-none text-gold;
+}
+
+.cube-home__statLabel {
+  @apply text-[10px] uppercase tracking-[0.2em] text-stone-400;
+}
+
+.cube-home__actions {
+  @apply mt-8 flex flex-wrap gap-3;
+}
+
+.cube-home__card.is-right .cube-home__actions {
+  @apply justify-end;
+}
+
+.cube-home__cta {
+  @apply inline-flex items-center rounded-full border border-gold px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-gold transition hover:bg-gold hover:text-ember;
+}
+
+.cube-home__cta--secondary {
+  @apply border-white/15 text-stone-200 hover:border-white hover:bg-white hover:text-ember;
+}
+
+html.light .cube-home__body {
+  @apply text-stone-700;
+}
+
+html.light .cube-home__cta--secondary {
+  @apply border-stone-300 text-stone-700;
+}
+
+html.light .cube-home__cta--secondary:hover {
+  @apply border-stone-900 bg-stone-900 text-sand;
+}
+
+html.light .cube-home__face {
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0, rgba(0,0,0,.05) 1px, transparent 1px, transparent 48px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0, rgba(0,0,0,.05) 1px, transparent 1px, transparent 48px),
+    #ddd8cf;
+}
+
+html.light .cube-home__card {
+  @apply border-gold/20 bg-sand/75;
+}
+
+@media (max-width: 900px) {
+  .cube-home__dots {
+    @apply hidden;
+  }
+
+  .cube-home__theme {
+    @apply bottom-4 left-4 h-9 w-9;
+  }
+
+  .cube-home__hud {
+    @apply right-4 top-4;
+  }
+
+  .cube-home__caption {
+    @apply bottom-4;
+  }
+
+  .cube-home__section {
+    @apply min-h-[130vh] items-end px-6 pb-20 pt-28;
+  }
+
+  .cube-home__card,
+  .cube-home__card.is-right {
+    @apply max-w-full border-l border-r-0 text-left;
+  }
+
+  .cube-home__card.is-right .cube-home__line,
+  .cube-home__card.is-right .cube-home__actions,
+  .cube-home__card.is-right .cube-home__stats {
+    @apply ml-0 justify-start;
+  }
+}
+
+.section-gallery {
+  @apply relative h-[calc(100vh-5rem)] overflow-hidden bg-[#f0ece3] text-[#111];
+  font-family: "Lato", sans-serif;
+}
+
+.section-gallery__canvas {
+  @apply fixed inset-x-0 bottom-0 top-0 z-[1];
+}
+
+.section-gallery__ui {
+  @apply pointer-events-none fixed inset-0 z-[2];
+}
+
+.section-gallery__logo {
+  font-family: "Playfair Display", serif;
+  @apply fixed left-[50px] top-[88px] z-10 text-base font-bold uppercase tracking-[0.14em];
+}
+
+.section-gallery__content {
+  @apply pointer-events-auto absolute left-[8%] top-1/4 w-[30%] max-w-[450px] translate-y-5 opacity-0 transition-all duration-700;
+}
+
+.section-gallery__content.is-active {
+  @apply translate-y-0 opacity-100;
+}
+
+.section-gallery__catalogue {
+  @apply mb-6 inline-block border-b border-[#ddd] pb-[5px] text-[0.7rem] uppercase tracking-[3px] text-[#999];
+}
+
+.section-gallery__title {
+  font-family: "Playfair Display", serif;
+  @apply mb-6 text-[4rem] font-normal italic leading-none text-[#0d0d0d];
+}
+
+.section-gallery__description {
+  @apply mb-12 text-[1.05rem] font-light leading-[1.8] text-[#444];
+  text-align: justify;
+}
+
+.section-gallery__meta {
+  @apply grid grid-cols-[80px_1fr] gap-y-3 border-t border-[#e0e0e0] pt-6;
+}
+
+.section-gallery__metaLabel {
+  @apply self-center text-[0.65rem] uppercase tracking-[1.5px] text-[#888];
+}
+
+.section-gallery__metaValue {
+  font-family: "Playfair Display", serif;
+  @apply text-[1.1rem] italic text-[#222];
+}
+
+.section-gallery__metaRow {
+  display: contents;
+}
+
+.section-gallery__readMore {
+  @apply mt-8 inline-block border border-[#111] bg-[#111] px-6 py-2.5 text-[0.8rem] uppercase tracking-[2px] text-white transition;
+}
+
+.section-gallery__readMore:hover {
+  @apply bg-transparent text-[#111];
+}
+
+.section-gallery__hint {
+  @apply fixed bottom-10 left-[50px] z-[10] text-[0.7rem] uppercase tracking-[2px] text-[#aaa];
+}
+
+@media (max-width: 1024px) {
+  .section-gallery__content {
+    @apply left-6 right-6 top-[22%] w-auto max-w-none;
+  }
+
+  .section-gallery__title {
+    @apply text-[3rem];
+  }
+
+  .section-gallery__logo,
+  .section-gallery__hint {
+    @apply left-6;
+  }
+}

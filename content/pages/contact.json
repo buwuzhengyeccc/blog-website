@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "backLabel": "返回",
+    "title": "Contact"
+  },
+  "hero": {
+    "eyebrow": "CONTACT / CONNECT",
+    "titleLine1": "期待与你建立连接，",
+    "titleLine2": "探讨更多可能。",
+    "description": "无论是关于 AI Agent 的前沿思考，还是逆向工程中的底层细节，亦或仅仅是分享一杯咖啡时间的闲聊。我始终认为，技术的本质在于连接，连接信息、连接逻辑，也连接彼此。"
+  },
+  "emailCard": {
+    "label": "Electronic Mail",
+    "email": "hello@example.com",
+    "copyLabel": "复制邮箱地址",
+    "copiedLabel": "已复制到剪贴板"
+  },
+  "socialsTitle": "Social Networks",
+  "socials": [
+    {
+      "name": "GitHub",
+      "desc": "探索我的开源代码与工程实践",
+      "url": "https://github.com"
+    },
+    {
+      "name": "Twitter",
+      "desc": "分享技术碎片与日常灵感",
+      "url": "https://twitter.com"
+    },
+    {
+      "name": "LinkedIn",
+      "desc": "查看我的职业轨迹与专业履历",
+      "url": "https://linkedin.com"
+    }
+  ]
+}

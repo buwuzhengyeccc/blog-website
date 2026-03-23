@@ -1,0 +1,116 @@
+fragment EntryParts on Entry {
+  __typename
+  title
+  date
+  summary
+  contentType
+  section
+  category
+  tag
+  kicker
+  author
+  readTime
+  coverImage
+  tags
+  draft
+  featured
+  stack
+  status
+  repo
+  demo
+  highlights
+  body
+}
+
+fragment AboutParts on About {
+  __typename
+  hudLabel
+  brandLabel
+  watermark
+  hero {
+    __typename
+    eyebrow
+    title
+    terminalText
+  }
+  overview {
+    __typename
+    quote
+    paths {
+      __typename
+      eyebrow
+      title
+      description
+      badge
+    }
+    bridgeText
+  }
+  vision {
+    __typename
+    statement
+    eyebrow
+    paragraphs
+  }
+  manifesto {
+    __typename
+    watermark
+    intro
+    lines
+    quote
+  }
+  footer {
+    __typename
+    description
+    ctaLabel
+    statusLabel
+  }
+}
+
+fragment ContactParts on Contact {
+  __typename
+  nav {
+    __typename
+    backLabel
+    title
+  }
+  hero {
+    __typename
+    eyebrow
+    titleLine1
+    titleLine2
+    description
+  }
+  emailCard {
+    __typename
+    label
+    email
+    copyLabel
+    copiedLabel
+  }
+  socialsTitle
+  socials {
+    __typename
+    name
+    desc
+    url
+  }
+}
+
+fragment HomeParts on Home {
+  __typename
+  items {
+    __typename
+    id
+    tag
+    titleLines
+    imageSrc
+    description
+    ctaText
+    detailHref
+    stats {
+      __typename
+      value
+      label
+    }
+  }
+}

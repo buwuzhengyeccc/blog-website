@@ -1,0 +1,55 @@
+{
+  "hudLabel": "SYS.INIT",
+  "brandLabel": "AGENT.REVERSE",
+  "watermark": "INTERSECTION OF SYSTEMS",
+  "hero": {
+    "eyebrow": "USER.PROFILE // 0x01",
+    "title": [
+      "BRIDGING",
+      "THE",
+      "BOUNDARIES"
+    ],
+    "terminalText": "> 我是一名本科大四学生，目前主要关注 AI Agent 与 逆向工程 / Pwn 等底层安全方向。"
+  },
+  "overview": {
+    "quote": "对我而言，这并不是两个彼此割裂的技术领域，而是两种通向系统本质的路径。",
+    "paths": [
+      {
+        "eyebrow": "PATH 01",
+        "title": "AI Agent",
+        "description": "让机器具备感知环境、规划任务、调用工具与自主执行的能力。",
+        "badge": "HIGH-LEVEL ABSTRACTION"
+      },
+      {
+        "eyebrow": "PATH 02",
+        "title": "REVERSE / PWN",
+        "description": "深入程序底层，理解系统如何真实运行、如何暴露边界，以及如何在复杂约束中被重新解释。",
+        "badge": "LOW-LEVEL EXECUTION"
+      }
+    ],
+    "bridgeText": "相比于把它们当作两个并列标签，我更在意的是它们之间尚未被充分展开的连接。"
+  },
+  "vision": {
+    "statement": "我未来真正想做的，不是简单地“既懂 AI，也懂安全”，而是将二者真正融合起来，利用 AI Agent 去改变逆向工程的工作方式与生产范式。",
+    "eyebrow": "INSIGHT // THE EVOLUTION",
+    "paragraphs": [
+      "在我看来，逆向工程不应该永远停留在高度依赖人工经验、手工拆解与碎片化推理的传统模式中。",
+      "随着 Agent 能力不断增强，未来的逆向分析一定会逐步演化为一种新的形态：由人定义目标，由智能体参与理解、推理、验证、调试与协作，让底层安全研究从“经验密集型工作”走向“结构化智能协同”。",
+      "这正是我最感兴趣的地方。我希望自己未来成为一名真正站在 Agent 与逆向工程交汇处的工程师：既理解高层智能系统如何组织行动，也理解底层程序如何在汇编、内存与系统边界之中暴露其最真实的运行逻辑。"
+    ]
+  },
+  "manifesto": {
+    "watermark": "MANIFESTO",
+    "intro": "我相信，未来真正稀缺的能力，不属于单纯停留在模型应用层的人，也不只属于传统意义上的底层研究者，而属于那些能够同时理解智能如何行动与系统如何运行，并在两者之间建立新连接的人。",
+    "lines": [
+      "理解，比使用更重要；",
+      "洞察，比结论更稀缺。"
+    ],
+    "quote": "真正有价值的工程能力，不只是解决问题，而是重新定义问题被解决的方式。"
+  },
+  "footer": {
+    "description": "这个博客记录我的学习、研究、实验与思考。\n\n我希望这里留下的，不只是零散的技术片段，而是一条持续逼近本质的轨迹；不是对既有答案的重复复述，而是对未来技术形态的长期下注。",
+    "ctaLabel": "ENTER_SYS",
+    "statusLabel": "SYSTEM.READY // AWAITING COMMAND"
+  }
+}

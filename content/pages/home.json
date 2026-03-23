@@ -1,0 +1,63 @@
+{
+  "items": [
+    {
+      "id": "s0",
+      "tag": "博客总览 — About",
+      "titleLines": ["ABOUT", "ME"],
+      "imageSrc": "/image/home-about-profile.jpg",
+      "description": "我同时关注 AI Agent 与 逆向工程 / Pwn。\n对我而言，这不是两个孤立的方向，而是两种理解复杂系统的方式。\n未来我想做的，是站在它们的交汇处，用 Agent 改变逆向工程。",
+      "ctaText": "Enter",
+      "detailHref": "/about"
+    },
+    {
+      "id": "s1",
+      "tag": "主题一 — AI Agent",
+      "titleLines": ["AI", "AGENT", "FLOW"],
+      "imageSrc": "https://assets.codepen.io/573855/demo-monsters-01.webp",
+      "description": "记录 AI 在真实开发流程中的协作方式，包括规划、代码审阅、调试和结构整理。",
+      "ctaText": "Turn",
+      "detailHref": "/sections/ai-agent"
+    },
+    {
+      "id": "s2",
+      "tag": "主题二 — Cybersecurity",
+      "titleLines": ["CYBER", "SECURITY", "VIEW"],
+      "imageSrc": "https://assets.codepen.io/573855/demo-monsters-02.webp",
+      "description": "从工程结构、依赖、暴露面和长期维护视角看安全，而不只停留在漏洞扫描。",
+      "ctaText": "Turn",
+      "detailHref": "/sections/cybersecurity"
+    },
+    {
+      "id": "s3",
+      "tag": "主题三 — Portfolio",
+      "titleLines": ["CASE", "STUDY", "WORK"],
+      "imageSrc": "https://assets.codepen.io/573855/demo-monsters-03.webp",
+      "description": "作品不只是结果展示，也包括问题背景、设计取舍和实现过程。",
+      "ctaText": "Turn",
+      "detailHref": "/sections/portfolio",
+      "stats": [
+        { "value": "6", "label": "Sections" },
+        { "value": "360", "label": "Motion" },
+        { "value": "1", "label": "System" }
+      ]
+    },
+    {
+      "id": "s4",
+      "tag": "主题四 — Thoughts",
+      "titleLines": ["SLOW", "NOTES", "FIRST"],
+      "imageSrc": "https://assets.codepen.io/573855/demo-monsters-04.webp",
+      "description": "这里承接那些还没长成完整文章的想法、观察和中间笔记。",
+      "ctaText": "Turn",
+      "detailHref": "/sections/thoughts"
+    },
+    {
+      "id": "s5",
+      "tag": "主题五 — Contact",
+      "titleLines": ["LET'S", "START", "TALKING"],
+      "imageSrc": "https://assets.codepen.io/573855/demo-monsters-05.webp",
+      "description": "如果你对项目、内容或合作感兴趣，这里是从浏览进入交流的入口。",
+      "ctaText": "Begin again",
+      "detailHref": "/contact"
+    }
+  ]
+}
