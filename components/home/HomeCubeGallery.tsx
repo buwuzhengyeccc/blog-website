@@ -42,7 +42,7 @@ const defaultCredit = {
 export function HomeCubeGallery({
   items,
   credit = defaultCredit,
-  defaultTheme = "dark"
+  defaultTheme = "light"
 }: CubeGalleryProps) {
   const [theme, setTheme] = useState<"dark" | "light">(defaultTheme);
   const [activeIndex, setActiveIndex] = useState(0);
