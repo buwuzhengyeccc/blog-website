@@ -1,173 +1,300 @@
 # MAINTENANCE
 
-## 目标
+## Purpose
 
-本文件面向日常维护者，强调：
+This file is the day-to-day operating guide for maintainers.
 
-- 如何改内容
-- 如何改页面
-- 如何验证
-- 如何避免破坏当前结构
+It focuses on:
 
-## 1. 常见维护任务
+- how to update content
+- how to validate changes
+- how to distinguish environment problems from code problems
+- how to troubleshoot without guessing
 
-### 1.1 修改正文内容
+## 1. Environment Baseline
 
-- 位置：`content/sections/<section>/*.mdx`
-- 适用场景：
-  - 修改文章标题
-  - 调整摘要
-  - 修改正文
-  - 更新项目状态 / 仓库地址 / Demo 地址
+- Node.js: `20.x`
+- npm: `10.x`
+- Local dev URL: `http://localhost:3000`
 
-建议流程：
+Before debugging anything, confirm:
 
-1. 修改对应 `.mdx`
-2. 本地运行 `npm run dev`
-3. 检查：
-   - section 聚合页
-   - 对应详情页
-4. 提交并 push
+```bash
+node -v
+npm -v
+```
 
-### 1.2 新增正文内容
+If versions differ materially from the baseline, fix the environment first.
 
-1. 选择正确的 section 目录
-2. 新建 `.mdx`
-3. frontmatter 至少提供：
-   - `title`
-   - `date`
-   - `summary`
-   - `contentType`
-   - `tags`
-4. 预览页面确认生成正常
+## 2. Standard Self-Check
 
-### 1.3 删除正文内容
+Run these in order in a fresh checkout:
 
-1. 删除对应 `.mdx`
-2. 本地确认该条目已不再出现在 section 页
-3. push 后等待 Vercel 自动更新
+```bash
+node -v
+npm -v
+npm install
+npm run dev
+npm run build
+npm run start
+```
 
-### 1.4 修改首页 / About / Contact
+Expected results:
 
-优先修改内容文件：
+- `node -v` -> `20.x`
+- `npm -v` -> `10.x`
+- `npm install` succeeds
+- `npm run dev` serves `http://localhost:3000`
+- `npm run build` succeeds
+- `npm run start` serves the production build
+
+## 3. Common Maintenance Tasks
+
+### Update section content
+
+Edit files under:
+
+- `content/sections/<section>/*.mdx`
+
+Typical edits:
+
+- title
+- summary
+- body
+- metadata such as repo/demo/status
+
+### Add new content entry
+
+1. Choose the correct section directory
+2. Create a new `.mdx`
+3. Fill frontmatter
+4. Validate locally
+
+### Remove content entry
+
+1. Delete the target `.mdx`
+2. Verify the entry disappears from the section page
+3. Commit and push
+
+### Update homepage / About / Contact
+
+Prefer editing:
 
 - `content/pages/home.json`
 - `content/pages/about.json`
 - `content/pages/contact.json`
 
-只有在内容结构不足以表达需求时，才修改组件。
+Only change components if the content shape is insufficient.
 
-## 2. 页面修改入口
+## 4. What to Edit First
 
-### 首页
-
-- 路由：`app/page.tsx`
-- 主组件：`components/home/HomeCubeGallery.tsx`
-- 内容：`content/pages/home.json`
-
-### About
-
-- 路由：`app/about/page.tsx`
-- 主组件：`components/about/AboutIntroPage.tsx`
-- 内容：`content/pages/about.json`
-
-### Contact
-
-- 路由：`app/contact/page.tsx`
-- 主组件：`components/contact/ContactIntroPage.tsx`
-- 内容：`content/pages/contact.json`
-
-### Section 聚合 / 详情
-
-- 聚合页：`app/sections/[slug]/page.tsx`
-- 详情页：`app/sections/[slug]/[articleSlug]/page.tsx`
-- 数据入口：`lib/sections.ts`
-
-## 3. 维护时优先修改哪一层
-
-按优先级从上到下：
+Use this order:
 
 1. `content/`
 2. `lib/`
 3. `components/`
 4. `app/`
-5. 配置文件
+5. config files
 
-原则：
+Principle:
 
-- 内容问题先改内容文件
-- 数据映射问题再改 `lib/`
-- 展示问题才改组件
-- 不要一上来就改路由结构
+- content problem -> fix content first
+- mapping problem -> fix `lib/`
+- rendering problem -> fix component
+- avoid route-level changes unless absolutely necessary
 
-## 4. 本地验证建议
+## 5. Local Validation Checklist
 
-最常用：
+### 5.1 Development validation
+
+Run:
 
 ```bash
 npm run dev
 ```
 
-内容编辑联调：
+Open:
 
-```bash
-npm run dev:cms
-```
+- `http://localhost:3000/`
+- `http://localhost:3000/sections/ai-agent`
+- `http://localhost:3000/sections/cybersecurity`
+- `http://localhost:3000/sections/portfolio`
+- `http://localhost:3000/sections/thoughts`
+- one detail page, for example:
+  - `http://localhost:3000/sections/ai-agent/agent-collaboration`
+- `http://localhost:3000/about`
+- `http://localhost:3000/contact`
 
-上线前验证：
+### 5.2 Production-like validation
+
+Run:
 
 ```bash
 npm run build
 npm run start
 ```
 
-## 5. 常见排错路径
+Re-check the same routes.
 
-### 某篇文章不显示
+Also verify:
 
-优先检查：
+- production `/admin` should not be a usable public entry
 
-- 文件是否在 `content/sections/<section>/`
-- frontmatter 的 `contentType` 是否有效
-- 是否设置了 `draft: true`
-- section 路径是否正确
+## 6. Development vs Production Rule
 
-### section 页面 404
+### Development mode
 
-优先检查：
+`npm run dev`
 
-- `lib/sections.ts` 中的 `SECTION_SLUGS`
-- 路由 slug 是否拼写正确
+Use for:
 
-### 详情页打不开
+- quick iteration
+- UI checks
+- local authoring work
 
-优先检查：
+Do not treat development mode alone as proof that production is safe.
 
-- 文件名 slug
-- `getAllSectionEntries()`
-- `getSectionEntryBySlugs()`
-- `getPostBySectionAndSlug()`
+### Production-like mode
 
-### `/admin` 没有 404
+`npm run build` + `npm run start`
 
-优先检查：
+Use for:
 
+- deployment-like failures
+- route generation issues
+- build-only regressions
+- runtime differences between local dev and Vercel
+
+If something looks suspicious in Vercel, reproduce with `build + start` before making larger changes.
+
+## 7. Fault Triage Table
+
+### A. Content problem
+
+Symptoms:
+
+- article missing
+- stale copy
+- wrong text on homepage/about/contact
+
+Check first:
+
+- `content/sections/*`
+- `content/pages/*`
+- `lib/entries.ts`
+- `lib/pages.ts`
+
+Useful commands:
+
+```bash
+npm run dev
+```
+
+### B. Route problem
+
+Symptoms:
+
+- section page 404
+- detail route 404
+- wrong slug resolution
+
+Check first:
+
+- `app/sections/[slug]/page.tsx`
+- `app/sections/[slug]/[articleSlug]/page.tsx`
+- `lib/sections.ts`
+- `lib/posts.ts`
+
+Useful commands:
+
+```bash
+npm run build
+npm run start
+```
+
+### C. Three.js / WebGL rendering problem
+
+Symptoms:
+
+- blank section canvas
+- broken homepage visual layer
+- environment-specific rendering issues
+
+Check first:
+
+- `components/sections/SectionGalleryPage.tsx`
+- `components/home/HomeCubeGallery.tsx`
+- `app/globals.css`
+
+Important:
+
+- these pages depend on browser WebGL capability
+- GPU / browser / driver differences can look like application bugs
+- verify in another browser before concluding code regression
+
+### D. Tina local editing problem
+
+Symptoms:
+
+- local CMS does not start
+- Tina schema mismatch
+
+Check first:
+
+- `tina/config.ts`
+- `tina/__generated__/`
+
+Useful command:
+
+```bash
+npm run dev:cms
+```
+
+### E. Build / deployment problem
+
+Symptoms:
+
+- Vercel build failure
+- local build failure
+- production-only route issue
+
+Check first:
+
+- `npm run build`
+- `DEPLOYMENT.md`
+- Vercel build logs
 - `middleware.ts`
 - `next.config.ts`
-- 线上是否为 production 环境
 
-## 6. 维护注意事项
+### F. Node / npm environment problem
 
-- 不要把内容重新写回组件
-- 不要恢复旧 `/posts`、`/notes`、`/projects` 前台入口
-- 不要把 Tina 重新做成线上 CMS
-- 不要为小改动做大重构
-- 影响首页 / section 视觉交互的改动要格外谨慎
+Symptoms:
 
-## 7. 推荐维护节奏
+- local install mismatch
+- dependencies behave differently by machine
 
-1. 先定位问题属于内容、数据、UI 还是部署
-2. 只改最小必要层
-3. 本地验证
-4. 提交信息写清楚
-5. push 后观察 Vercel 部署结果
+Check first:
+
+- `.nvmrc`
+- `package.json` engines
+- `node -v`
+- `npm -v`
+
+## 8. Dependency Safety Notes
+
+If `npm audit` reports vulnerabilities:
+
+- do not run `npm audit fix --force` blindly
+- first identify whether the issue affects:
+  - production runtime
+  - local tooling
+  - only dev dependencies
+- prefer minimal and verified dependency updates
+
+## 9. Operational Notes
+
+- Use `http://localhost:3000` consistently
+- Prefer narrow changes over cleanup refactors
+- Keep content in `content/`, not in components
+- Do not reintroduce old public hubs like `/posts`, `/notes`, `/projects`
+- Keep Tina local-only

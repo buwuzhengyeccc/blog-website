@@ -1,26 +1,65 @@
 # Blog Website
 
-个人技术品牌站 / 博客站，基于 Next.js App Router 构建。  
-当前生产形态是“内容站 + 本地内容编辑 + GitHub 提交 + Vercel 自动部署”。
+Personal brand site and content-driven blog built with Next.js App Router.
 
-## 项目定位
+This repository is maintained as a production-ready content site with:
 
-- 前台是固定信息架构的品牌站与内容站
-- 内容按专题 section 组织，而不是按 posts / notes / projects 作为前台入口
-- TinaCMS 只用于本地编辑辅助，不作为线上 CMS 后台
-- 线上站点只负责展示内容，不暴露正式 `/admin` 后台
+- fixed frontend information architecture
+- local file-based content
+- TinaCMS for local editing only
+- GitHub as the source of truth
+- Vercel for automatic production deployment
 
-## 技术栈
+## Project Purpose
+
+- Present a personal technical brand site
+- Organize public content by section, not by content type hub
+- Keep maintenance simple and predictable
+- Publish by editing locally, committing to Git, and letting Vercel deploy
+
+## Tech Stack
 
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
-- TinaCMS（仅本地编辑）
-- Three.js（首页 / section 视觉交互）
+- TinaCMS (local editing helper only)
+- Three.js
 - npm
-- Vercel（生产部署）
+- Vercel
 
-## 核心路由
+## Environment Requirements
+
+### Recommended runtime
+
+- Node.js: `20.x`
+- npm: `10.x`
+
+The repository now declares this in:
+
+- `package.json` -> `engines`
+- `.nvmrc`
+
+### Operating systems
+
+The project is expected to work on:
+
+- Windows
+- macOS
+- Linux
+
+Windows is already verified in the current maintenance history.
+
+### Local development address
+
+Use this address consistently during development:
+
+- `http://localhost:3000`
+
+Prefer `localhost` over `127.0.0.1` to reduce unnecessary local warnings and environment ambiguity.
+
+## Public Routes
+
+The public site is intentionally fixed to:
 
 - `/`
 - `/sections/[slug]`
@@ -28,126 +67,151 @@
 - `/about`
 - `/contact`
 
-当前有效 section：
+Current section slugs:
 
 - `ai-agent`
 - `cybersecurity`
 - `portfolio`
 - `thoughts`
 
-## 内容来源
+## Content Sources
 
-- 正文内容：`content/sections/*`
-- 静态页面内容：`content/pages/*`
+- Section content: `content/sections/*`
+- Static page content: `content/pages/*`
 
-说明：
+Notes:
 
-- `content/sections/*` 下的每个 `.mdx` 文件都是一个内容条目
-- 条目通过 frontmatter 的 `contentType` 区分 `post` / `note` / `project`
-- 前台聚合与详情统一走 `/sections/...`
-- `draft: true` 的条目不会在前台公开展示
+- Each `content/sections/**/*.mdx` file is one entry
+- Entries use frontmatter `contentType` to distinguish `post`, `note`, and `project`
+- Public routing still stays under `/sections/...`
+- Entries with `draft: true` are excluded from public section views
 
-## 目录简述
+## Directory Overview
 
-- `app/`：页面路由
-- `components/`：页面组件与可复用 UI
-- `lib/`：内容读取、数据映射、页面数据组装
-- `content/pages/`：首页、About、Contact 的 JSON 内容源
-- `content/sections/`：正文 MDX 内容源
-- `tina/`：Tina 本地编辑配置与生成文件
-- `public/`：静态资源
-- `docs/`：补充说明文档
+- `app/` - routes
+- `components/` - page components and reusable UI
+- `lib/` - content loaders, mapping logic, page data assembly
+- `content/pages/` - homepage, About, Contact content
+- `content/sections/` - MDX content entries
+- `tina/` - Tina config and generated files
+- `public/` - static assets
+- `docs/` - supporting architecture notes
 
-## 本地运行
+## Local Setup
 
-安装依赖：
+### Quick self-check
+
+Run these commands in order in a fresh environment:
 
 ```bash
+node -v
+npm -v
 npm install
+npm run dev
 ```
 
-普通前台开发：
+Expected results:
+
+- `node -v` shows `20.x`
+- `npm -v` shows `10.x`
+- `npm install` completes without blocking errors
+- `npm run dev` starts a local server on `http://localhost:3000`
+
+### Normal frontend development
 
 ```bash
 npm run dev
 ```
 
-带 Tina 本地编辑一起运行：
+Open:
+
+- `http://localhost:3000`
+
+### Local editing with Tina
 
 ```bash
 npm run dev:cms
 ```
 
-本地生产构建验证：
+Use this only for local content editing workflows.  
+It is not the production publishing path.
+
+### Production-like local verification
 
 ```bash
 npm run build
 npm run start
 ```
 
-## 内容更新方式
+Use this when you need to distinguish development-only issues from production-relevant issues.
 
-### 更新正文内容
+## Content Update Workflow
 
-1. 在 `content/sections/<section>/` 下新增或修改 `.mdx`
-2. 维护 frontmatter，例如：
-   - `title`
-   - `date`
-   - `summary`
-   - `contentType`
-   - `tags`
-   - 其他可选字段
-3. 本地运行检查页面显示
-4. `git add` / `git commit` / `git push`
-5. Vercel 自动部署
+### Update section content
 
-### 更新首页 / About / Contact
+1. Edit or add `.mdx` files in `content/sections/<section>/`
+2. Verify frontmatter
+3. Run local checks
+4. Commit and push
+5. Let Vercel deploy automatically
 
-直接修改：
+### Update homepage / About / Contact
+
+Edit:
 
 - `content/pages/home.json`
 - `content/pages/about.json`
 - `content/pages/contact.json`
 
-或通过本地 Tina 编辑。
+Or use Tina locally if needed.
 
-## 部署方式
+## Deployment
 
-- 代码托管：GitHub
-- 生产部署：Vercel
-- 发布路径：本地修改 -> Git 提交 -> push 到 `main` -> Vercel 自动部署
+Production publishing flow:
 
-当前生产构建命令：
+1. Edit locally
+2. Commit to Git
+3. Push to GitHub
+4. Vercel deploys automatically
+
+Primary production build command:
 
 ```bash
 npm run build
 ```
 
-## 常见维护入口
+See `DEPLOYMENT.md` for:
 
-- 首页内容：`content/pages/home.json`
-- About 页面内容：`content/pages/about.json`
-- Contact 页面内容：`content/pages/contact.json`
-- section 聚合与详情数据：`lib/sections.ts`
-- 正文内容读取：`lib/entries.ts`
-- 页面内容读取：`lib/pages.ts`
-- Tina 配置：`tina/config.ts`
-- 生产环境 `/admin` 拦截：`middleware.ts`
+- dev vs prod differences
+- deployment checks
+- rollback guidance
 
-## 注意事项
+## Common Maintenance Entry Points
 
-- 不要恢复 `/posts`、`/notes`、`/projects` 作为正式前台入口
-- 不要把 Tina 当成线上 CMS 方案继续扩展
-- 生产环境不应保留可用的 `/admin` 后台
-- `section` 归属以文件路径为准，不应重新改成依赖手工填写
-- 修改内容优先走 `content/`，不要把内容硬编码回组件
-- 修改前台视觉时，尽量保持现有首页与 section 页的交互主方向
+- Homepage content: `content/pages/home.json`
+- About content: `content/pages/about.json`
+- Contact content: `content/pages/contact.json`
+- Section aggregation logic: `lib/sections.ts`
+- Section content reading: `lib/entries.ts`
+- Static page reading: `lib/pages.ts`
+- Tina schema: `tina/config.ts`
+- Production `/admin` guard: `middleware.ts`
 
-## 维护补充
+## Notes and Constraints
 
-更详细的维护与 AI 接手文档见：
+- Do not restore `/posts`, `/notes`, `/projects` as formal public navigation
+- Do not evolve Tina into an online production CMS
+- Production `/admin` should not become a public feature
+- Section ownership should continue to come from file paths
+- Prefer changing `content/` before changing components
+- Keep homepage and section visual behavior stable unless there is a deliberate design decision
 
-- `README_TO_AI.md`
-- `MAINTENANCE.md`
-- `DEPLOYMENT.md`
-- `CHANGELOG.md`
+## Suggested Reading Order
+
+For a new maintainer:
+
+1. `README.md`
+2. `README_TO_AI.md`
+3. `MAINTENANCE.md`
+4. `DEPLOYMENT.md`
+5. `docs/architecture.md`

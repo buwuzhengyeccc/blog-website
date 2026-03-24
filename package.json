@@ -2,6 +2,10 @@
   "name": "personal-blog-home",
   "private": true,
   "version": "0.1.0",
+  "engines": {
+    "node": "20.x",
+    "npm": ">=10 <11"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:cms": "tinacms dev -c \"next dev\"",

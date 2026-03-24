@@ -1,50 +1,35 @@
 # README_TO_AI
 
-## 1. 项目目标与定位
+## 1. Mission
 
-这是一个个人技术品牌站 / 博客站，目标不是通用 CMS，也不是多内容类型门户，而是：
+This file is the fast handoff context for AI maintenance work.
 
-- 保持固定前台信息架构
-- 以 section 为前台组织维度
-- 使用本地文件作为内容源
-- 用 TinaCMS 辅助本地编辑
-- 通过 GitHub + Vercel 完成上线与更新
+Read this repository as a production content site with strong structural constraints, not as a playground for broad refactors.
 
-这个项目后续维护应优先保持“内容站 + 低运维 + 最小改动”的原则。
+Primary goals:
 
----
+- preserve the fixed public architecture
+- keep content file-based
+- keep Tina local-only
+- keep publishing predictable through GitHub + Vercel
 
-## 2. 当前系统形态
+## 2. Mandatory Reading Order
 
-### 已确认
+When taking over this project, read in this order:
 
-- 技术栈：Next.js App Router + TypeScript + Tailwind CSS + TinaCMS + Three.js
-- 内容源：
-  - `content/sections/*`
-  - `content/pages/*`
-- 生产部署：
-  - GitHub 托管
-  - Vercel 自动部署
-- Tina 定位：
-  - 仅本地编辑辅助工具
-  - 不作为线上 CMS 后台
-- 生产环境 `/admin`：
-  - 不是正式功能入口
-  - 由 `middleware.ts` 在非 development 环境返回 404
+1. `README.md`
+2. `README_TO_AI.md`
+3. `MAINTENANCE.md`
+4. `DEPLOYMENT.md`
+5. `docs/architecture.md`
 
-### 已淘汰的旧思路
+Then inspect implementation files only as needed.
 
-- 以前台 `posts / notes / projects` 作为正式入口
-- 线上保留 Tina 后台
-- 直接在原大仓库里继续混合维护博客项目
+## 3. Project Shape
 
-这些都不要恢复。
+### Public information architecture
 
----
-
-## 3. 前台信息架构
-
-当前正式前台结构固定为：
+The public site is fixed to:
 
 - `/`
 - `/sections/[slug]`
@@ -52,379 +37,344 @@
 - `/about`
 - `/contact`
 
-### 当前 section 列表
+Current section slugs:
 
 - `ai-agent`
 - `cybersecurity`
 - `portfolio`
 - `thoughts`
 
-### 路由约束
+### Content sources
 
-- 所有正文详情都统一走 `/sections/[slug]/[articleSlug]`
-- 不要重新引入 `/posts`、`/notes`、`/projects` 作为正式对外路由
-- 当前仓库里 `app/posts`、`app/notes`、`app/projects` 目录残留为空目录/旧痕迹，不代表应该恢复旧架构
+- `content/sections/*`
+- `content/pages/*`
 
----
+### Production model
 
-## 4. 内容组织方式
+- local editing
+- git commit
+- push to GitHub
+- automatic Vercel deployment
 
-### 4.1 正文内容
+## 4. Key Architectural Rules
 
-正文统一存放于：
+- Do not restore `/posts`, `/notes`, `/projects` as primary public routes
+- Do not redesign production around Tina online usage
+- Do not move content back into hardcoded components
+- Do not change section ownership from path-derived to manually trusted input
+- Do not over-refactor for small maintenance tasks
 
-- `content/sections/ai-agent/*.mdx`
-- `content/sections/cybersecurity/*.mdx`
-- `content/sections/portfolio/*.mdx`
-- `content/sections/thoughts/*.mdx`
+If a task can be solved in content files or a single mapping layer, do not spread it across unrelated modules.
 
-每个 `.mdx` 文件代表一个条目，frontmatter 中的关键字段包括：
+## 5. Runtime and Environment Assumptions
 
-- `title`
-- `date`
-- `summary`
-- `contentType`：`post` / `note` / `project`
-- `tags`
-- 可选：`draft`、`featured`、`kicker`、`category`、`tag`、`author`、`readTime`、`coverImage`、`stack`、`status`、`repo`、`demo`、`highlights`
+- Recommended Node.js: `20.x`
+- Recommended npm: `10.x`
+- Local dev URL: `http://localhost:3000`
+- Prefer `localhost` over `127.0.0.1`
 
-### 4.2 静态页面内容
+### Why this matters
 
-静态页面走 JSON 内容源：
+- environment drift can look like code regressions
+- build success on Vercel does not guarantee local parity
+- local issues should be checked against `build + start` before being called production bugs
 
-- `content/pages/home.json`
-- `content/pages/about.json`
-- `content/pages/contact.json`
+## 6. High-Value Files
 
-不要把这些页面文案重新硬编码回页面组件。
-
-### 4.3 section 的来源约束
-
-`section` 的真实来源应视为“文件路径”，不是可自由编辑的业务字段。
-
-当前读取逻辑在：
-
-- `lib/entries.ts`
-- `lib/content.ts`
-
-其中 `sectionFromSectionsFilePath()` 会从文件路径推导 section。  
-这是一条重要约束：**不要把 section 归属重新改回依赖手工填写**。
-
----
-
-## 5. 页面与数据关系
-
-### 首页
-
-- 路由：`app/page.tsx`
-- 数据源：`content/pages/home.json`
-- 读取逻辑：`lib/pages.ts`
-- 主组件：`components/home/HomeCubeGallery.tsx`
-
-首页包含主题逻辑与立方体视觉交互。  
-首页最近一次调整：默认首次访问主题改为 `light`。
-
-### About
-
-- 路由：`app/about/page.tsx`
-- 数据源：`content/pages/about.json`
-- 主组件：`components/about/AboutIntroPage.tsx`
-
-### Contact
-
-- 路由：`app/contact/page.tsx`
-- 数据源：`content/pages/contact.json`
-- 主组件：`components/contact/ContactIntroPage.tsx`
-
-### Section 聚合页
-
-- 路由：`app/sections/[slug]/page.tsx`
-- 数据组装：`lib/sections.ts`
-- 主组件：`components/sections/SectionGalleryPage.tsx`
-
-### Section 详情页
-
-- 路由：`app/sections/[slug]/[articleSlug]/page.tsx`
-- 数据来源：
-  - `lib/sections.ts`
-  - `lib/posts.ts`
-- 组件分流：
-  - `post` -> `components/posts/PostDetail.tsx`
-  - `note/project` -> `components/sections/SectionEntryDetail.tsx`
-
----
-
-## 6. 关键目录结构
-
-```text
-app/
-  page.tsx
-  about/page.tsx
-  contact/page.tsx
-  sections/[slug]/page.tsx
-  sections/[slug]/[articleSlug]/page.tsx
-
-components/
-  about/
-  contact/
-  home/
-  layout/
-  posts/
-  sections/
-  shared/
-
-content/
-  pages/
-    about.json
-    contact.json
-    home.json
-  sections/
-    ai-agent/
-    cybersecurity/
-    portfolio/
-    thoughts/
-
-lib/
-  content.ts
-  entries.ts
-  pages.ts
-  posts.ts
-  sections.ts
-
-tina/
-  config.ts
-  __generated__/
-```
-
----
-
-## 7. 关键文件与职责
-
-- `app/layout.tsx`
-  - 全局布局
-  - 注入首页主题初始化脚本
-
-- `app/globals.css`
-  - 全局样式
-  - 首页与 section 页的主题和视觉基础
-
-- `lib/content.ts`
-  - MDX frontmatter 解析
-  - section 路径推导
-
-- `lib/entries.ts`
-  - 递归读取 `content/sections`
-  - 生成标准化条目数据
-
-- `lib/pages.ts`
-  - 读取 `content/pages/*.json`
-
-- `lib/sections.ts`
-  - section 元信息
-  - 正文映射为前台 section 条目
-  - `draft` 过滤
-
-- `lib/posts.ts`
-  - `post` 类型详情页数据拼装
-
-- `tina/config.ts`
-  - 本地 Tina schema 与内容编辑配置
-
-- `middleware.ts`
-  - 生产环境拦截 `/admin`
-
-- `next.config.ts`
-  - 包含 `/admin` rewrite 和远程图片白名单
-
----
-
-## 8. 当前维护方式
-
-当前维护方式是文件优先：
-
-1. 修改 `content/` 下的内容文件
-2. 本地运行检查
-3. 提交 Git
-4. push 到 GitHub
-5. 等 Vercel 自动部署
-
-本地内容编辑有两条路：
-
-- 直接改 `content/` 文件
-- 用 `npm run dev:cms` 启动 Tina 本地编辑
-
-若只是常规维护，优先推荐直接编辑内容文件；若需要非开发人员协作编辑，可使用 Tina 本地模式。
-
----
-
-## 9. 当前部署方式
-
-### 生产链路
-
-- GitHub 仓库：`buwuzhengyeccc/blog-website`
-- 分支：`main`
-- 平台：Vercel
-- 自动部署触发：push 到 GitHub 后自动触发
-
-### 生产脚本
-
-- `npm run build` -> `next build`
-
-### 本地脚本
-
-- `npm run dev`
-- `npm run dev:cms`
-- `npm run build`
-- `npm run start`
-- `npm run tina:build`
-
-### 环境变量
-
-当前前台生产形态下，通常不依赖 Tina 线上环境变量。  
-`tina/config.ts` 中存在：
-
-- `GITHUB_BRANCH`
-- `VERCEL_GIT_COMMIT_REF`
-- `NEXT_PUBLIC_TINA_CLIENT_ID`
-- `TINA_TOKEN`
-
-但生产构建默认并不依赖 `tinacms build`。  
-如果未来 Vercel 构建日志出现 Tina 相关变量报错，再按日志处理，不要预先复杂化部署。
-
----
-
-## 10. 已知约束
-
-### 必须保持
-
-- 前台正式结构必须维持为：
-  - `/`
-  - `/sections/[slug]`
-  - `/sections/[slug]/[articleSlug]`
-  - `/about`
-  - `/contact`
-
-- 内容源必须维持为：
-  - `content/sections/*`
-  - `content/pages/*`
-
-- Tina 仅用于本地编辑，不作为线上后台
-
-- 生产环境 `/admin` 必须不可作为正式入口使用
-
-### 不要随便改
-
-- 不要恢复 `/posts`、`/notes`、`/projects` 作为前台入口
-- 不要重构首页交互主方向
-- 不要把内容重新塞回组件硬编码
-- 不要把 section 归属重新改为手工可编辑主字段
-- 不要把线上部署重新变成依赖 Tina local mode
-
----
-
-## 11. 常见维护任务怎么做
-
-### 新增一篇正文
-
-1. 在对应 section 目录新增 `.mdx`
-2. 填好 frontmatter
-3. 若要公开，确保不是 `draft: true`
-4. 本地验证详情页和 section 聚合页
-
-### 删除一篇正文
-
-1. 删除对应 `.mdx`
-2. 本地查看该条目是否已从聚合页消失
-3. 提交并 push
-
-### 修改首页
-
-优先改：
-
-- `content/pages/home.json`
-
-若涉及交互或视觉实现，再看：
-
-- `components/home/HomeCubeGallery.tsx`
-- `app/globals.css`
-
-### 修改 About / Contact
-
-优先改：
-
-- `content/pages/about.json`
-- `content/pages/contact.json`
-
-### 调整 section 元数据
-
-查看：
-
-- `lib/sections.ts`
-
-这里包含 section 标题、描述、主题、提示文案。
-
----
-
-## 12. 当前已知问题 / 技术债
-
-### 已确认
-
-- 现有 `README.md`、`docs/architecture.md` 和部分 Tina 配置文本存在乱码/编码痕迹，文档可读性较差
-- `app/posts`、`app/notes`、`app/projects` 目录残留为空目录/旧路径痕迹，当前不影响运行，但容易误导新维护者
-- `next.config.ts` 仍保留 `/admin -> /admin/index.html` rewrite；虽然有 `middleware.ts` 兜底，但这是后续可收口点
-
-### 推测但未构成当前阻塞
-
-- 主题逻辑在首页和全局布局中存在一定分散；若后续继续做主题统一，需谨慎，避免破坏当前行为
-
----
-
-## 13. 如果要新增功能，先看什么
-
-优先顺序：
-
-1. `README_TO_AI.md`
-2. `MAINTENANCE.md`
-3. `DEPLOYMENT.md`
-4. `lib/sections.ts`
-5. `lib/entries.ts`
-6. `lib/pages.ts`
-7. 对应页面组件
-
-新增功能前先判断：
-
-- 是否会破坏固定信息架构
-- 是否会破坏内容文件作为唯一内容源
-- 是否会把线上重新拉回 Tina CMS 模式
-- 是否属于“最小改动”还是“范围扩散”
-
----
-
-## 14. AI 接手时建议优先读取的文件
+### Top-level docs
 
 - `README.md`
 - `README_TO_AI.md`
 - `MAINTENANCE.md`
 - `DEPLOYMENT.md`
-- `package.json`
+- `docs/architecture.md`
+
+### Routing
+
 - `app/page.tsx`
 - `app/about/page.tsx`
 - `app/contact/page.tsx`
 - `app/sections/[slug]/page.tsx`
 - `app/sections/[slug]/[articleSlug]/page.tsx`
+
+### Data loading
+
 - `lib/content.ts`
 - `lib/entries.ts`
 - `lib/pages.ts`
 - `lib/sections.ts`
+- `lib/posts.ts`
+
+### Platform and editing
+
 - `middleware.ts`
+- `next.config.ts`
 - `tina/config.ts`
 
----
+## 7. Content Model Summary
 
-## 15. AI 维护时的工作风格约束
+### Section entries
 
-- 优先最小改动
-- 不做无关重构
-- 不要顺手改变页面视觉主方向
-- 先检查再执行
-- 高风险改动前先明确说明影响
-- 对“架构回退”“重新引入旧入口”“线上 Tina 扩张”保持高度克制
+Each MDX entry under `content/sections/**` is normalized through:
+
+- `lib/content.ts`
+- `lib/entries.ts`
+
+Important frontmatter fields:
+
+- `title`
+- `date`
+- `summary`
+- `contentType`
+- `tags`
+
+Optional fields include:
+
+- `draft`
+- `featured`
+- `kicker`
+- `category`
+- `tag`
+- `author`
+- `readTime`
+- `coverImage`
+- `stack`
+- `status`
+- `repo`
+- `demo`
+- `highlights`
+
+### Static pages
+
+These are JSON-driven:
+
+- `content/pages/home.json`
+- `content/pages/about.json`
+- `content/pages/contact.json`
+
+## 8. Known Constraints Around Tina
+
+- Tina is retained for local editing support
+- production build should not depend on online Tina workflow
+- production `/admin` is not meant to be public
+- `middleware.ts` is part of the safety boundary
+
+If a future task touches Tina, first ask whether the work is genuinely local-editing support or whether it risks reopening the online CMS path.
+
+## 9. Development vs Production Differences
+
+### Development
+
+Command:
+
+```bash
+npm run dev
+```
+
+Characteristics:
+
+- fast feedback
+- more local warnings
+- React / Next development behavior
+- not sufficient by itself to prove production safety
+
+### Production-like local verification
+
+Commands:
+
+```bash
+npm run build
+npm run start
+```
+
+Characteristics:
+
+- closest local match to Vercel behavior
+- required when debugging deployment-like issues
+- better signal for route generation, bundling, and runtime compatibility
+
+### Rule
+
+If a bug might affect deployment or production behavior, verify it with `build + start`, not only `next dev`.
+
+## 10. Validation Order for Maintenance Work
+
+When content or code changes are made, validate in this order:
+
+### Local development validation
+
+Check:
+
+- `/`
+- `/sections/ai-agent`
+- `/sections/cybersecurity`
+- `/sections/portfolio`
+- `/sections/thoughts`
+- one detail page
+- `/about`
+- `/contact`
+
+### Production-like validation
+
+Run:
+
+```bash
+npm run build
+npm run start
+```
+
+Then re-check:
+
+- `/`
+- section pages
+- one detail page
+- `/about`
+- `/contact`
+
+If production behavior matters, also check:
+
+- `/admin` should not be usable in production
+
+## 11. Fault Triage Map
+
+### Content issue
+
+Examples:
+
+- article missing
+- wrong summary
+- page text outdated
+
+First inspect:
+
+- `content/sections/*`
+- `content/pages/*`
+- `lib/entries.ts`
+- `lib/pages.ts`
+
+### Route issue
+
+Examples:
+
+- section 404
+- detail route missing
+- wrong slug
+
+First inspect:
+
+- `app/sections/[slug]/page.tsx`
+- `app/sections/[slug]/[articleSlug]/page.tsx`
+- `lib/sections.ts`
+- `lib/posts.ts`
+
+### Three.js / WebGL issue
+
+Examples:
+
+- section gallery renders incorrectly
+- black canvas
+- visual failure only in some browsers
+
+First inspect:
+
+- `components/sections/SectionGalleryPage.tsx`
+- `components/home/HomeCubeGallery.tsx`
+- `app/globals.css`
+
+Important note:
+
+- section and homepage visuals depend on browser WebGL support and GPU/browser compatibility
+- not every rendering failure is a business-logic failure
+- confirm browser, GPU, and WebGL capability before concluding code regression
+
+### Tina local editing issue
+
+Examples:
+
+- local Tina editor not loading
+- schema mismatch
+
+First inspect:
+
+- `tina/config.ts`
+- `tina/__generated__/`
+- `npm run dev:cms`
+
+### Build / deployment issue
+
+Examples:
+
+- Vercel build failure
+- route generation mismatch
+- production-only breakage
+
+First inspect:
+
+- `npm run build`
+- `DEPLOYMENT.md`
+- Vercel build logs
+- `middleware.ts`
+- `next.config.ts`
+
+### Node version issue
+
+Examples:
+
+- local install mismatch
+- dependency behavior differs across machines
+
+First inspect:
+
+- `.nvmrc`
+- `package.json` engines
+- `node -v`
+- `npm -v`
+
+## 12. Dependency Safety Rule
+
+If `npm audit` reports warnings:
+
+- do not run `npm audit fix --force` blindly
+- first determine whether the issue affects production runtime, local tooling, or only dev dependencies
+- prefer minimal, verified dependency changes
+- preserve build stability over aggressive auto-upgrades
+
+## 13. Standard Self-Check Commands
+
+Use these in a new environment:
+
+```bash
+node -v
+npm -v
+npm install
+npm run dev
+npm run build
+npm run start
+```
+
+Expected:
+
+- Node is `20.x`
+- npm is `10.x`
+- install completes
+- dev server runs at `http://localhost:3000`
+- build succeeds
+- start serves the production build
+
+## 14. Do Not Do This
+
+- Do not reopen the old route architecture
+- Do not use Tina as justification for online CMS expansion
+- Do not rewrite homepage or section visuals unless explicitly asked
+- Do not “clean up” by moving content into code
+- Do not treat WebGL rendering issues as plain route/content bugs without checking environment
+- Do not use `npm audit fix --force` casually
+- Do not assume `next dev` behavior equals production behavior
+
+## 15. Default Working Style
+
+- inspect first
+- prefer minimal edits
+- document assumptions
+- distinguish confirmed facts from inference
+- validate with the narrowest useful check before broad changes
