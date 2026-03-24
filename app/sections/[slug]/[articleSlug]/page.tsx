@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PostDetail } from "@/components/posts/PostDetail";
+import { PostMarkdownContent } from "@/components/posts/PostMarkdownContent";
 import { SectionEntryDetail } from "@/components/sections/SectionEntryDetail";
 import { getPostBySectionAndSlug } from "@/lib/posts";
 import { getAllSectionEntries, getSectionEntryBySlugs } from "@/lib/sections";
@@ -32,7 +33,11 @@ export default async function SectionEntryPage({
       notFound();
     }
 
-    return <PostDetail post={post} backHref={backHref} />;
+    return (
+      <PostDetail post={post} backHref={backHref}>
+        <PostMarkdownContent source={post.body} />
+      </PostDetail>
+    );
   }
 
   return <SectionEntryDetail entry={entry} backHref={backHref} />;

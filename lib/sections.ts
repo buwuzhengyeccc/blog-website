@@ -117,7 +117,7 @@ function buildPostSource(entry: EntryRecord): Post {
     author: entry.author,
     readTime: entry.readTime,
     coverImage: entry.coverImage,
-    blocks: []
+    body: entry.body
   };
 }
 

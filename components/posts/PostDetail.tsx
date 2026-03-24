@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Post, PostBlock } from "@/lib/posts";
+import type { Post } from "@/lib/posts";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+<>?/[]{}";
 
@@ -139,106 +139,52 @@ function MagneticWrapper({
   );
 }
 
-function ArticleBlockView({
-  block,
-  addToRefs,
-  revealRefs
-}: {
-  block: PostBlock;
-  addToRefs: (element: HTMLElement | null) => void;
-  revealRefs: React.MutableRefObject<HTMLElement[]>;
-}) {
-  switch (block.type) {
-    case "paragraph":
-      return (
-        <div
-          key={block.id}
-          ref={addToRefs}
-          className="translate-y-6 opacity-0 transition-all duration-700 ease-out"
-        >
-          <p className="font-mono text-[0.85rem] leading-[2] text-[#ede8df]/70 md:text-[0.95rem] md:leading-[1.8]">
-            {block.content}
-          </p>
-        </div>
-      );
+function BackgroundGridGlow() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-    case "heading":
-      return (
-        <div
-          key={block.id}
-          ref={addToRefs}
-          className="mb-2 mt-10 translate-y-6 opacity-0 transition-all duration-700 ease-out"
-        >
-          <div
-            className="mb-4 h-[1px] w-8 origin-left scale-x-0 bg-[#d4a84b] opacity-0 transition-all delay-300 duration-700"
-            ref={(element) => {
-              if (element && !revealRefs.current.includes(element)) {
-                revealRefs.current.push(element);
-              }
-            }}
-          />
-          <h2 className="min-h-[1.5em] font-sans text-4xl font-normal uppercase leading-[0.92] tracking-[0.03em] md:text-5xl">
-            <ScrambleText text={block.content} delay={200} />
-          </h2>
-        </div>
-      );
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMousePos({ x: event.clientX, y: event.clientY });
+    };
 
-    case "quote":
-      return (
-        <div
-          key={block.id}
-          ref={addToRefs}
-          className="my-8 w-full translate-y-6 border-l border-[#d4a84b]/30 bg-[#1c1814]/80 p-8 opacity-0 backdrop-blur-md backdrop-saturate-150 transition-all duration-700 ease-out md:-ml-[5%] md:w-[110%] md:p-12"
-        >
-          <div className="mb-6 text-[0.6rem] uppercase tracking-[0.25em] text-[#d4a84b]">
-            INSIGHT
-          </div>
-          <p className="font-sans text-3xl font-normal uppercase leading-[1] tracking-[0.03em] text-[#ede8df] md:text-[2.5rem]">
-            {block.content}
-          </p>
-        </div>
-      );
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-    case "image":
-      return (
-        <figure
-          key={block.id}
-          ref={addToRefs}
-          className="my-10 w-full translate-y-6 opacity-0 transition-all duration-700 ease-out md:-ml-[10%] md:w-[120%]"
-        >
-          <div className="group relative overflow-hidden border border-[#d4a84b]/10 bg-[#1c1814]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={block.content}
-              alt={block.caption || "Article visual"}
-              className="h-auto w-full object-cover grayscale contrast-125 opacity-80 transition-all duration-700 ease-in-out group-hover:scale-[1.03] group-hover:grayscale-0 group-hover:opacity-100"
-            />
-          </div>
-          {block.caption ? (
-            <figcaption className="mt-5 flex items-center gap-4">
-              <span className="h-[1px] w-6 shrink-0 bg-[#d4a84b]" />
-              <span className="text-[0.6rem] uppercase tracking-[0.25em] text-[#8a7b6e]">
-                <ScrambleText text={block.caption} delay={300} />
-              </span>
-            </figcaption>
-          ) : null}
-        </figure>
-      );
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
-    default:
-      return null;
-  }
+  return (
+    <div
+      className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
+      style={{
+        background: `
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 48px),
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 48px),
+          #14100d
+        `
+      }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 z-10 opacity-40 mix-blend-color-dodge"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 168, 75, 0.15), transparent 40%)`
+        }}
+      />
+    </div>
+  );
 }
 
 export function PostDetail({
   post,
-  backHref = "/"
+  backHref = "/",
+  children
 }: {
   post: Post;
   backHref?: string;
+  children?: React.ReactNode;
 }) {
   const router = useRouter();
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const hudPctRef = useRef<HTMLDivElement>(null);
   const progressFillRef = useRef<HTMLDivElement>(null);
   const revealRefs = useRef<HTMLElement[]>([]);
@@ -295,17 +241,13 @@ export function PostDetail({
     revealRefs.current.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
-  }, [post.blocks, post.slug]);
+  }, [post.slug]);
 
   const addToRefs = useCallback((element: HTMLElement | null) => {
     if (element && !revealRefs.current.includes(element)) {
       revealRefs.current.push(element);
     }
   }, []);
-
-  const handleGlobalMouseMove = (event: React.MouseEvent) => {
-    setMousePos({ x: event.clientX, y: event.clientY });
-  };
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -319,26 +261,9 @@ export function PostDetail({
 
   return (
     <div
-      onMouseMove={handleGlobalMouseMove}
       className="relative min-h-screen overflow-x-hidden bg-[#1c1814] font-mono text-[#ede8df] selection:bg-[#d4a84b] selection:text-[#1c1814]"
     >
-      <div
-        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
-        style={{
-          background: `
-            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 48px),
-            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 48px),
-            #14100d
-          `
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 z-10 opacity-40 mix-blend-color-dodge"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 168, 75, 0.15), transparent 40%)`
-          }}
-        />
-      </div>
+      <BackgroundGridGlow />
 
       <div className="fixed right-4 top-4 z-50 text-right text-[0.65rem] uppercase tracking-[0.15em] text-[#8a7b6e] md:right-8 md:top-8">
         <div ref={hudPctRef}>000%</div>
@@ -430,25 +355,26 @@ export function PostDetail({
         </div>
       </header>
 
-      <main className="relative z-10 w-full px-6 py-20 pb-40 md:px-20">
-        <div className="mx-auto flex max-w-[800px] flex-col gap-12 md:gap-16">
-          {post.blocks.map((block) => (
-            <ArticleBlockView
-              key={block.id}
-              block={block}
-              addToRefs={addToRefs}
-              revealRefs={revealRefs}
-            />
-          ))}
+      <main className="relative z-10 w-full px-6 py-16 pb-40 md:px-20">
+        <div className="mx-auto flex max-w-[1100px] flex-col gap-12 md:gap-16">
+          <article
+            ref={addToRefs}
+            className="translate-y-6 border border-[#d4a84b]/10 bg-[#16110e]/75 p-6 opacity-0 shadow-[0_0_0_1px_rgba(212,168,75,0.03)] backdrop-blur-sm transition-all duration-700 ease-out md:p-10"
+          >
+            <div className="mb-16 flex items-center gap-5 text-[0.65rem] uppercase tracking-[0.25em] text-[#8a7b6e]">
+              <span>Begin Module</span>
+              <div className="h-[1px] flex-1 bg-[#d4a84b]/15" />
+            </div>
+            {children}
+          </article>
 
           <div
             ref={addToRefs}
-            className="flex justify-center translate-y-6 pt-20 opacity-0 transition-all duration-700 ease-out"
+            className="mt-40 flex translate-y-6 flex-col items-center justify-center opacity-0 transition-all duration-700 ease-out"
           >
-            <div className="flex items-center gap-4 text-[0.6rem] uppercase tracking-[0.25em] text-[#8a7b6e]">
-              <span className="h-[1px] w-8 bg-[#d4a84b]/30" />
+            <div className="h-20 w-[1px] bg-gradient-to-b from-[#d4a84b]/40 to-transparent" />
+            <div className="mt-6 text-[0.65rem] uppercase tracking-[0.35em] text-[#8a7b6e]">
               END OF SYSTEM LOG
-              <span className="h-[1px] w-8 bg-[#d4a84b]/30" />
             </div>
           </div>
         </div>
